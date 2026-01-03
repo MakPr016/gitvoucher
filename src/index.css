@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-border: #333333;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: white;
+    font-family: sans-serif;
+  }
+}
+
+.premium-card {
+  background-color: var(--color-surface);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+.premium-card:hover {
+  border-color: rgba(255,255,255,0.2);
+  background-color: #161616;
+}
