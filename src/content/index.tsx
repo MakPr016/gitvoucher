@@ -37,6 +37,72 @@ const observer = new MutationObserver((mutations) => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
+document.addEventListener('click', (e) => {
+  const target = e.target as HTMLElement;
+  
+  const button = target.closest('button');
+  
+  if (!button) return;
+  
+  const buttonText = button.textContent?.trim().toLowerCase();
+  const isCommentButton = buttonText === 'comment' && button.getAttribute('data-variant') === 'primary';
+  
+  if (!isCommentButton) return;
+  
+  console.log('[GitVoucher] Comment button clicked');
+  
+  const container = button.closest('[data-target="new-comment-form.newCommentForm"]') || 
+                    button.closest('.timeline-comment-wrapper') ||
+                    button.closest('.new-discussion-timeline') ||
+                    document.querySelector('.comment-form-textarea')?.closest('div');
+  
+  let textarea: HTMLTextAreaElement | null = null;
+  
+  if (container) {
+    textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+  }
+  
+  if (!textarea) {
+    textarea = document.querySelector('textarea.comment-form-textarea') as HTMLTextAreaElement;
+  }
+  
+  if (!textarea) {
+    const allTextareas = Array.from(document.querySelectorAll('textarea'));
+    textarea = allTextareas.find(ta => ta.offsetParent !== null) as HTMLTextAreaElement || null;
+  }
+  
+  if (!textarea) {
+    console.log('[GitVoucher] No textarea found');
+    return;
+  }
+
+  const value = textarea.value;
+  console.log('[GitVoucher] Textarea value:', value);
+  
+  const regex = /\/pay\s+@([\w-]+)\s+(\d+(?:\.\d+)?)\s+"([^"]+)"/;
+  const match = value.match(regex);
+  
+  console.log('[GitVoucher] Regex match:', match);
+
+  if (match) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    const payload = {
+      recipient: match[1],
+      amount: match[2],
+      reason: match[3]
+    };
+
+    console.log('[GitVoucher] Dispatching payment event:', payload);
+
+    window.dispatchEvent(new CustomEvent('git-voucher-payment', { 
+      detail: payload 
+    }));
+  }
+}, true);
+
 function tryInject(menu: HTMLElement, attempts: number) {
   const list = menu.querySelector('.js-slash-command-menu-items');
   const hasItems = list && list.querySelectorAll('.SelectMenu-item').length > 0;
