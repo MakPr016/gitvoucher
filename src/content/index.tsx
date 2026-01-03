@@ -39,7 +39,6 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 document.addEventListener('click', (e) => {
   const target = e.target as HTMLElement;
-  
   const button = target.closest('button');
   
   if (!button) return;
@@ -48,8 +47,6 @@ document.addEventListener('click', (e) => {
   const isCommentButton = buttonText === 'comment' && button.getAttribute('data-variant') === 'primary';
   
   if (!isCommentButton) return;
-  
-  console.log('[GitVoucher] Comment button clicked');
   
   const container = button.closest('[data-target="new-comment-form.newCommentForm"]') || 
                     button.closest('.timeline-comment-wrapper') ||
@@ -71,18 +68,11 @@ document.addEventListener('click', (e) => {
     textarea = allTextareas.find(ta => ta.offsetParent !== null) as HTMLTextAreaElement || null;
   }
   
-  if (!textarea) {
-    console.log('[GitVoucher] No textarea found');
-    return;
-  }
+  if (!textarea) return;
 
   const value = textarea.value;
-  console.log('[GitVoucher] Textarea value:', value);
-  
   const regex = /\/pay\s+@([\w-]+)\s+(\d+(?:\.\d+)?)\s+"([^"]+)"/;
   const match = value.match(regex);
-  
-  console.log('[GitVoucher] Regex match:', match);
 
   if (match) {
     e.preventDefault();
@@ -94,8 +84,6 @@ document.addEventListener('click', (e) => {
       amount: match[2],
       reason: match[3]
     };
-
-    console.log('[GitVoucher] Dispatching payment event:', payload);
 
     window.dispatchEvent(new CustomEvent('git-voucher-payment', { 
       detail: payload 
@@ -179,7 +167,6 @@ function insertVoucherCommand() {
   }
 
   textarea.dispatchEvent(new Event('input', { bubbles: true }));
-
   textarea.focus();
   
   setTimeout(() => {

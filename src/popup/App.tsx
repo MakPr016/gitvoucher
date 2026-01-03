@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Loader2, User, Wallet, ExternalLink, LogIn, GithubIcon } from 'lucide-react';
 
+interface UserData {
+  authenticated: boolean;
+  username?: string;
+  githubId?: string;
+  wallet?: string;
+}
+
 function App() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/me')
+    fetch('http://localhost:3000/api/me', {
+      credentials: 'include'
+    })
       .then(res => res.json())
       .then(data => {
         setUser(data);
@@ -59,6 +68,7 @@ function App() {
                 <a 
                   href="http://localhost:3000" 
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 text-xs bg-white text-black py-1.5 rounded font-bold hover:bg-gray-200 transition"
                 >
                   Link Now <ExternalLink className="h-3 w-3" />
@@ -79,6 +89,7 @@ function App() {
           <a 
             href="http://localhost:3000" 
             target="_blank"
+            rel="noopener noreferrer"
             className="w-full bg-white text-black py-2.5 rounded-lg font-bold hover:bg-gray-200 transition flex items-center justify-center gap-2 text-sm"
           >
             Login via GitHub <ExternalLink className="h-3 w-3" />

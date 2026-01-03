@@ -2,23 +2,28 @@
   "manifest_version": 3,
   "name": "Git Voucher",
   "version": "1.0.0",
+  "description": "Send crypto rewards to GitHub contributors",
   "action": {
     "default_popup": "src/popup/index.html"
   },
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
   "content_scripts": [
     {
-      "matches": [
-        "https://github.com/*"
-      ],
-      "js": [
-        "src/content/index.tsx"
-      ],
+      "matches": ["https://github.com/*"],
+      "js": ["src/content/index.tsx"],
       "run_at": "document_end"
+    },
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["src/content/pageWorld.ts"],
+      "run_at": "document_start",
+      "world": "MAIN"
     }
   ],
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage", "tabs", "scripting"],
   "host_permissions": [
     "http://localhost:3000/*",
     "https://github.com/*"
