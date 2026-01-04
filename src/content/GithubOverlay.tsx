@@ -270,6 +270,13 @@ const GithubOverlay = () => {
 
       setTxStatus("Success! Voucher on-chain.");
 
+      // Insert hidden metadata into GitHub comment box
+      const commentBox = document.querySelector("textarea[name='comment']") as HTMLTextAreaElement;
+      if (commentBox) {
+        const hiddenMetadata = `<!-- Voucher Metadata: {\"voucherId\": \"${seedVoucherId}\", \"amount\": \"${payment.amount}\", \"recipient\": \"${payment.recipient}\"} -->`;
+        commentBox.value += `\n${hiddenMetadata}`;
+      }
+
       window.dispatchEvent(new CustomEvent('git-voucher-payment-success', {
         detail: {
           voucherId: seedVoucherId, // Use the sanitized ID
@@ -288,6 +295,37 @@ const GithubOverlay = () => {
       setLoading(false);
     }
   };
+
+  // Chrome Extension logic to detect hidden metadata and inject "Claim" button
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "childList") {
+          const comments = document.querySelectorAll(".comment-body");
+          comments.forEach((comment) => {
+            const metadataMatch = comment.textContent?.match(/<!-- Voucher Metadata: (.+?) -->/);
+            if (metadataMatch) {
+              const metadata = JSON.parse(metadataMatch[1]);
+              if (!comment.querySelector(".voucher-claim-button")) {
+                const claimButton = document.createElement("button");
+                claimButton.textContent = "Claim Voucher";
+                claimButton.className = "voucher-claim-button bg-[#2ea44f] hover:bg-[#2c974b] text-white font-bold py-2 px-4 rounded-lg";
+                claimButton.onclick = () => {
+                  alert(`Claiming voucher: ${metadata.voucherId}`);
+                  // Add logic to handle claiming the voucher
+                };
+                comment.appendChild(claimButton);
+              }
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
 
   if (!payment) return null;
 
