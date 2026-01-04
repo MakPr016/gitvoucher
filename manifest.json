@@ -12,20 +12,34 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://github.com/*"],
-      "js": ["src/content/index.tsx"],
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "src/content/index.tsx"
+      ],
       "run_at": "document_end"
     },
     {
-      "matches": ["https://github.com/*"],
-      "js": ["src/content/pageWorld.ts"],
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "src/content/pageWorld.ts"
+      ],
       "run_at": "document_start",
       "world": "MAIN"
     }
   ],
-  "permissions": ["storage", "tabs", "scripting"],
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting"
+  ],
   "host_permissions": [
     "http://localhost:3000/*",
-    "https://github.com/*"
+    "https://github.com/*",
+    "https://api.devnet.solana.com/*",
+    "wss://api.devnet.solana.com/*"
   ]
 }

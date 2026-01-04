@@ -6,6 +6,8 @@ import css from '../index.css?inline';
 const rootElement = document.createElement('div');
 rootElement.id = 'git-voucher-root';
 document.body.appendChild(rootElement);
+rootElement.id = 'git-voucher-root';
+document.body.appendChild(rootElement);
 
 const shadowRoot = rootElement.attachShadow({ mode: 'open' });
 const style = document.createElement('style');
@@ -23,8 +25,8 @@ const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
       if (node instanceof HTMLElement) {
-        const menu = node.classList.contains('js-slash-command-menu') 
-          ? node 
+        const menu = node.classList.contains('js-slash-command-menu')
+          ? node
           : node.querySelector('.js-slash-command-menu');
 
         if (menu) {
@@ -40,34 +42,34 @@ observer.observe(document.body, { childList: true, subtree: true });
 document.addEventListener('click', (e) => {
   const target = e.target as HTMLElement;
   const button = target.closest('button');
-  
+
   if (!button) return;
-  
+
   const buttonText = button.textContent?.trim().toLowerCase();
   const isCommentButton = buttonText === 'comment' && button.getAttribute('data-variant') === 'primary';
-  
+
   if (!isCommentButton) return;
-  
-  const container = button.closest('[data-target="new-comment-form.newCommentForm"]') || 
-                    button.closest('.timeline-comment-wrapper') ||
-                    button.closest('.new-discussion-timeline') ||
-                    document.querySelector('.comment-form-textarea')?.closest('div');
-  
+
+  const container = button.closest('[data-target="new-comment-form.newCommentForm"]') ||
+    button.closest('.timeline-comment-wrapper') ||
+    button.closest('.new-discussion-timeline') ||
+    document.querySelector('.comment-form-textarea')?.closest('div');
+
   let textarea: HTMLTextAreaElement | null = null;
-  
+
   if (container) {
     textarea = container.querySelector('textarea') as HTMLTextAreaElement;
   }
-  
+
   if (!textarea) {
     textarea = document.querySelector('textarea.comment-form-textarea') as HTMLTextAreaElement;
   }
-  
+
   if (!textarea) {
     const allTextareas = Array.from(document.querySelectorAll('textarea'));
     textarea = allTextareas.find(ta => ta.offsetParent !== null) as HTMLTextAreaElement || null;
   }
-  
+
   if (!textarea) return;
 
   const value = textarea.value;
@@ -85,11 +87,69 @@ document.addEventListener('click', (e) => {
       reason: match[3]
     };
 
-    window.dispatchEvent(new CustomEvent('git-voucher-payment', { 
-      detail: payload 
+    window.dispatchEvent(new CustomEvent('git-voucher-payment', {
+      detail: payload
     }));
   }
 }, true);
+
+window.addEventListener('git-voucher-payment-success', ((e: CustomEvent) => {
+  const { voucherId, amount, recipient, signature } = e.detail;
+
+  // Find the active textarea again
+  let textarea = document.querySelector('textarea.comment-form-textarea') as HTMLTextAreaElement;
+  if (!textarea) {
+    // Fallback search
+    const allTextareas = Array.from(document.querySelectorAll('textarea'));
+    textarea = allTextareas.find(ta => ta.value.includes('/pay')) as HTMLTextAreaElement;
+  }
+
+  if (textarea) {
+    const val = textarea.value;
+    const regex = /\/pay\s+@([\w-]+)\s+(\d+(?:\.\d+)?)\s+"([^"]+)"/;
+
+    // Create nice markdown
+    const message = `
+### 💎 Git Voucher Created!
+
+| Recipient | Amount | Status |
+| :--- | :--- | :--- |
+| **@${recipient}** | **${amount} SOL** | ✅ Funded |
+
+🔗 [**Claim Voucher**](http://localhost:3000/claim/${voucherId})
+_(Only @${recipient} can claim)_
+
+<details>
+<summary>Transaction Details</summary>
+
+- **Signature**: \`${signature}\`
+- **Voucher ID**: \`${voucherId}\`
+</details>
+        `.trim();
+
+    const newValue = val.replace(regex, message);
+
+    // Update textarea
+    const proto = window.HTMLTextAreaElement.prototype;
+    const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+    if (nativeSetter) {
+      nativeSetter.call(textarea, newValue);
+    } else {
+      textarea.value = newValue;
+    }
+
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+
+    // Attempt to submit
+    setTimeout(() => {
+      const container = textarea.closest('form') || textarea.closest('.previewable-comment-form');
+      const submitBtn = container?.querySelector('.btn-primary') as HTMLButtonElement;
+      if (submitBtn && !submitBtn.disabled) {
+        submitBtn.click();
+      }
+    }, 500);
+  }
+}) as EventListener);
 
 function tryInject(menu: HTMLElement, attempts: number) {
   const list = menu.querySelector('.js-slash-command-menu-items');
@@ -142,24 +202,24 @@ function insertVoucherCommand() {
   if (!textarea || textarea.tagName !== 'TEXTAREA') {
     textarea = document.querySelector('.comment-form-textarea[aria-label="Comment body"]') as HTMLTextAreaElement;
   }
-  
+
   if (!textarea) return;
 
   const start = textarea.selectionStart;
   const val = textarea.value;
-  
+
   const slashIndex = val.lastIndexOf('/', start);
   const safeStart = slashIndex !== -1 ? slashIndex : start;
 
   const textBefore = val.slice(0, safeStart);
   const textAfter = val.slice(start);
   const template = `/pay @username 10 "Reason"`;
-  
+
   const newValue = textBefore + template + textAfter;
 
   const proto = window.HTMLTextAreaElement.prototype;
   const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
-  
+
   if (nativeSetter) {
     nativeSetter.call(textarea, newValue);
   } else {
@@ -168,7 +228,7 @@ function insertVoucherCommand() {
 
   textarea.dispatchEvent(new Event('input', { bubbles: true }));
   textarea.focus();
-  
+
   setTimeout(() => {
     const newStart = textBefore.length + 6;
     const newEnd = newStart + 9;

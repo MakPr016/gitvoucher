@@ -10,18 +10,19 @@
   body {
     background-color: var(--color-background);
     color: white;
-    font-family: sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
   }
 }
 
 .premium-card {
   background-color: var(--color-surface);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 16px;
   transition: all 0.2s;
 }
+
 .premium-card:hover {
-  border-color: rgba(255,255,255,0.2);
+  border-color: rgba(255, 255, 255, 0.2);
   background-color: #161616;
 }

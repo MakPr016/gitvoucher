@@ -1,0 +1,718 @@
+{
+    "address": "8iRpzhFJF4PJnhyKZRDXk6B3TKjxQGEX6kcsteYq77iR",
+    "metadata": {
+        "name": "git_voucher_escrow",
+        "version": "0.1.0",
+        "spec": "0.1.0",
+        "description": "Created with Anchor"
+    },
+    "instructions": [
+        {
+            "name": "add_maintainer",
+            "discriminator": [
+                58,
+                137,
+                30,
+                214,
+                212,
+                175,
+                183,
+                203
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "admin",
+                    "signer": true,
+                    "relations": [
+                        "organization"
+                    ]
+                }
+            ],
+            "args": [
+                {
+                    "name": "maintainer",
+                    "type": "pubkey"
+                }
+            ]
+        },
+        {
+            "name": "cancel_voucher",
+            "discriminator": [
+                84,
+                142,
+                170,
+                253,
+                46,
+                35,
+                180,
+                158
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "voucher",
+                    "writable": true
+                },
+                {
+                    "name": "maintainer",
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "claim_voucher",
+            "discriminator": [
+                229,
+                30,
+                138,
+                35,
+                188,
+                87,
+                230,
+                7
+            ],
+            "accounts": [
+                {
+                    "name": "voucher",
+                    "writable": true
+                },
+                {
+                    "name": "recipient",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "create_voucher",
+            "discriminator": [
+                22,
+                97,
+                32,
+                21,
+                104,
+                137,
+                188,
+                143
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "voucher",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    118,
+                                    111,
+                                    117,
+                                    99,
+                                    104,
+                                    101,
+                                    114
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "voucher_id"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "maintainer",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "voucher_id",
+                    "type": "string"
+                },
+                {
+                    "name": "recipient_github_id",
+                    "type": "u64"
+                },
+                {
+                    "name": "amount",
+                    "type": "u64"
+                },
+                {
+                    "name": "metadata",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "deposit",
+            "discriminator": [
+                242,
+                35,
+                198,
+                137,
+                82,
+                225,
+                242,
+                182
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "depositor",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "expire_voucher",
+            "discriminator": [
+                67,
+                29,
+                125,
+                143,
+                104,
+                223,
+                68,
+                129
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "voucher",
+                    "writable": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "initialize_organization",
+            "discriminator": [
+                21,
+                20,
+                253,
+                138,
+                250,
+                160,
+                119,
+                87
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    111,
+                                    114,
+                                    103,
+                                    97,
+                                    110,
+                                    105,
+                                    122,
+                                    97,
+                                    116,
+                                    105,
+                                    111,
+                                    110
+                                ]
+                            },
+                            {
+                                "kind": "arg",
+                                "path": "org_github_id"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "admin",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "org_github_id",
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "register_user",
+            "discriminator": [
+                2,
+                241,
+                150,
+                223,
+                99,
+                214,
+                116,
+                97
+            ],
+            "accounts": [
+                {
+                    "name": "user_profile",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    117,
+                                    115,
+                                    101,
+                                    114,
+                                    45,
+                                    112,
+                                    114,
+                                    111,
+                                    102,
+                                    105,
+                                    108,
+                                    101
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "user"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "user",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "github_id",
+                    "type": "u64"
+                },
+                {
+                    "name": "github_username",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "remove_maintainer",
+            "discriminator": [
+                245,
+                195,
+                218,
+                111,
+                14,
+                8,
+                219,
+                235
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "admin",
+                    "signer": true,
+                    "relations": [
+                        "organization"
+                    ]
+                }
+            ],
+            "args": [
+                {
+                    "name": "maintainer",
+                    "type": "pubkey"
+                }
+            ]
+        },
+        {
+            "name": "update_user_github_data",
+            "discriminator": [
+                72,
+                120,
+                182,
+                136,
+                158,
+                20,
+                119,
+                122
+            ],
+            "accounts": [
+                {
+                    "name": "user_profile",
+                    "writable": true,
+                    "pda": {
+                        "seeds": [
+                            {
+                                "kind": "const",
+                                "value": [
+                                    117,
+                                    115,
+                                    101,
+                                    114,
+                                    45,
+                                    112,
+                                    114,
+                                    111,
+                                    102,
+                                    105,
+                                    108,
+                                    101
+                                ]
+                            },
+                            {
+                                "kind": "account",
+                                "path": "user"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "user",
+                    "writable": true,
+                    "signer": true
+                },
+                {
+                    "name": "authority",
+                    "relations": [
+                        "user_profile"
+                    ]
+                }
+            ],
+            "args": [
+                {
+                    "name": "github_id",
+                    "type": "u64"
+                },
+                {
+                    "name": "github_username",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "withdraw",
+            "discriminator": [
+                183,
+                18,
+                70,
+                156,
+                148,
+                109,
+                161,
+                34
+            ],
+            "accounts": [
+                {
+                    "name": "organization",
+                    "writable": true
+                },
+                {
+                    "name": "admin",
+                    "writable": true,
+                    "signer": true,
+                    "relations": [
+                        "organization"
+                    ]
+                },
+                {
+                    "name": "system_program",
+                    "address": "11111111111111111111111111111111"
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "accounts": [
+        {
+            "name": "OrganizationEscrow",
+            "discriminator": [
+                199,
+                109,
+                246,
+                169,
+                9,
+                115,
+                140,
+                214
+            ]
+        },
+        {
+            "name": "UserProfile",
+            "discriminator": [
+                32,
+                37,
+                119,
+                205,
+                179,
+                180,
+                13,
+                194
+            ]
+        },
+        {
+            "name": "VoucherEscrow",
+            "discriminator": [
+                196,
+                190,
+                59,
+                143,
+                227,
+                7,
+                195,
+                118
+            ]
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "ZeroAmount",
+            "msg": "Amount must be greater than zero"
+        },
+        {
+            "code": 6001,
+            "name": "InsufficientBalance",
+            "msg": "Insufficient balance"
+        },
+        {
+            "code": 6002,
+            "name": "NotAuthorized",
+            "msg": "Not authorized"
+        },
+        {
+            "code": 6003,
+            "name": "MaintainerAlreadyExists",
+            "msg": "Maintainer already exists"
+        },
+        {
+            "code": 6004,
+            "name": "VoucherIdTooLong",
+            "msg": "Voucher ID too long (max 64 characters)"
+        },
+        {
+            "code": 6005,
+            "name": "MetadataTooLong",
+            "msg": "Metadata too long (max 512 characters)"
+        },
+        {
+            "code": 6006,
+            "name": "InvalidVoucherState",
+            "msg": "Invalid voucher state"
+        },
+        {
+            "code": 6007,
+            "name": "VoucherExpired",
+            "msg": "Voucher has expired"
+        },
+        {
+            "code": 6008,
+            "name": "VoucherNotExpired",
+            "msg": "Voucher has not expired yet"
+        },
+        {
+            "code": 6009,
+            "name": "Overflow",
+            "msg": "Arithmetic overflow"
+        },
+        {
+            "code": 6010,
+            "name": "Underflow",
+            "msg": "Arithmetic underflow"
+        }
+    ],
+    "types": [
+        {
+            "name": "OrganizationEscrow",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "org_github_id",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "admin",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "balance",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "maintainers",
+                        "type": {
+                            "vec": "pubkey"
+                        }
+                    },
+                    {
+                        "name": "total_vouchers_created",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "UserProfile",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "authority",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "github_id",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "github_username",
+                        "type": "string"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "VoucherEscrow",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "voucher_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "organization",
+                        "type": "pubkey"
+                    },
+                    {
+                        "name": "recipient_github_id",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "expires_at",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "state",
+                        "type": {
+                            "defined": {
+                                "name": "VoucherState"
+                            }
+                        }
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "string"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "VoucherState",
+            "type": {
+                "kind": "enum",
+                "variants": [
+                    {
+                        "name": "Pending"
+                    },
+                    {
+                        "name": "Claimed"
+                    },
+                    {
+                        "name": "Cancelled"
+                    },
+                    {
+                        "name": "Expired"
+                    }
+                ]
+            }
+        }
+    ]
+}
