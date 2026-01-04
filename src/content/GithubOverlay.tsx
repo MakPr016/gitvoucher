@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { X, Check, Wallet, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import * as anchor from '@coral-xyz/anchor';
 import { Buffer } from 'buffer';
 import idl from '../lib/idl.json';
@@ -19,8 +19,8 @@ interface PaymentDetail {
 const GithubOverlay = () => {
   const [payment, setPayment] = useState<PaymentDetail | null>(null);
   const [loading, setLoading] = useState(false);
-  const [txStatus, setTxStatus] = useState("");
-  const [txSignature, setTxSignature] = useState("");
+  const [_txStatus, setTxStatus] = useState("");
+  const [_txSignature, setTxSignature] = useState("");
 
   useEffect(() => {
     const handler = (e: CustomEvent<PaymentDetail>) => {
@@ -292,55 +292,55 @@ const GithubOverlay = () => {
   if (!payment) return null;
 
   return (
-    <div className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-[#1c1c1c] border border-white/10 rounded-xl w-[420px] p-6 shadow-2xl relative">
+    <div className="fixed inset-0 z-2147483647 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="bg-[#1c1c1c] border border-white/10 rounded-xl w-105 p-6 shadow-2xl relative">
         {!loading && (
           <button onClick={() => setPayment(null)} className="absolute top-4 right-4 text-gray-400 hover:text-white">
             <X className="w-5 h-5" />
           </button>
         )}
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
-            <Wallet className="w-5 h-5 text-green-500" />
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-white mb-2">Confirm Payment</h2>
+          <p className="text-sm text-gray-400">Git Voucher</p>
+        </div>
+
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1">Recipient Username/ID</label>
+            <div className="w-full bg-[#1c1c1c] border border-white/10 rounded-lg p-3 text-white text-sm">
+              {payment.recipient}
+            </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">Confirm Payment</h2>
-            <p className="text-sm text-gray-400">Git Voucher</p>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1">Amount</label>
+            <div className="w-full bg-[#1c1c1c] border border-white/10 rounded-lg p-3 text-white text-sm">
+              {payment.amount} SOL
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-1">Message</label>
+            <div className="w-full bg-[#1c1c1c] border border-white/10 rounded-lg p-3 text-white text-sm">
+              {payment.reason}
+            </div>
           </div>
         </div>
 
-        <div className="space-y-3 mb-6">
-          <div className="bg-white/5 p-3 rounded-lg border border-white/5">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Recipient</div>
-            <div className="text-white font-mono text-sm">@{payment.recipient}</div>
-          </div>
-          <div className="bg-white/5 p-3 rounded-lg border border-white/5">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Amount</div>
-            <div className="text-2xl font-bold text-white">{payment.amount} SOL</div>
-          </div>
+        <div className="flex items-center justify-end gap-3">
+          <button
+            className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg"
+            onClick={() => setPayment(null)}
+          >
+            Reset
+          </button>
+          <button
+            className="bg-[#2ea44f] hover:bg-[#2c974b] text-white font-bold py-2 px-4 rounded-lg"
+            onClick={handleConfirm}
+            disabled={loading}
+          >
+            Submit
+          </button>
         </div>
-
-        {txStatus && (
-          <div className={`mb-4 p-3 rounded border text-sm ${txStatus.includes('Error') ? 'bg-red-900/20 border-red-500/50 text-red-200' : 'bg-green-900/20 border-green-500/50 text-green-200'}`}>
-            {txStatus}
-          </div>
-        )}
-
-        {txSignature && (
-          <div className="mb-4 p-3 bg-black/50 rounded border border-white/10 break-all text-xs font-mono text-gray-400">
-            Sig: {txSignature}
-          </div>
-        )}
-
-        <button
-          onClick={handleConfirm}
-          disabled={loading}
-          className="w-full bg-[#2ea44f] hover:bg-[#2c974b] disabled:opacity-50 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2"
-        >
-          {loading ? <Loader2 className="animate-spin" /> : <Check />}
-          {txSignature ? "Done" : "Sign Transaction"}
-        </button>
       </div>
     </div>
   );
