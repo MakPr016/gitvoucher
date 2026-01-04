@@ -1,77 +1,53 @@
-# React + TypeScript + Vite
+# Git Voucher - Chrome Extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Chrome/Brave extension that enables GitHub maintainers to send crypto rewards directly from comment boxes. It injects a `/pay` slash command into GitHub's interface and handles transaction signing via Anchor.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **GitHub Injection:** Adds a "Git Voucher" command to the slash-menu in GitHub issues and PRs.
+- **Smart Parsing:** Detects `/pay @username amount "reason"` commands in comments.
+- **Secure Signing:** Connects to your Solana wallet (Phantom) to sign escrow transactions.
+- **Markdown Previews:** Automatically updates comments with a formatted table and claim link after a successful transaction.
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Build Tool:** Vite + CRXJS
+- **Framework:** React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Solana:** @coral-xyz/anchor
 
-## Expanding the ESLint configuration
+## 📦 Installation & Development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. **Clone the repository:**
+   ```bash
+   git clone <repo-url>
+   cd makpr016-gitvoucher
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+3. **Build the extension:**
+   ```bash
+   npm run build
+   ```
+   *For development with hot reload, use `npm run dev`.*
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Load into Chrome/Brave:**
+   1. Open `chrome://extensions/`.
+   2. Enable **Developer mode** (top right).
+   3. Click **Load unpacked**.
+   4. Select the `dist` folder generated in step 3.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📖 Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-## Installation
-
-To install and get started with this project, visit the [GitVoucher GitHub Repository](https://github.com/MakPr016/gitvoucher) for detailed instructions.
+1. **Login:** Ensure you are logged into the [Git Voucher Dashboard](http://localhost:3000) and have linked your wallet.
+2. **Comment:** Go to any GitHub Issue or PR.
+3. **Pay:** Type `/pay` to see the menu, or manually type:
+   ```text
+   /pay @contributor 0.5 "Great work on this fix!"
+   ```
+4. **Confirm:** A popup will appear to sign the transaction. Once confirmed, the comment will update with a claim link.
