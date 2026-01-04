@@ -71,3 +71,7 @@ export default defineConfig([
   },
 ])
 ```
+
+## Installation
+
+To install and get started with this project, visit the [GitVoucher GitHub Repository](https://github.com/MakPr016/gitvoucher) for detailed instructions.
